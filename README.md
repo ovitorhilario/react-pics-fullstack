@@ -1,4 +1,4 @@
-# React Pics - Fullstack Express + React + SQLite
+# React Pics
 
 Este projeto é uma galeria de imagens interativa e segura de ponta a ponta (Fullstack), construída utilizando **React** no front-end, **Express** no back-end e **SQLite** como banco de dados. 
 
