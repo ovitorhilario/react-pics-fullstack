@@ -57,7 +57,7 @@ db.serialize(() => {
       const userHash = bcrypt.hashSync('user123', 10);
 
       db.run('INSERT INTO users (username, password) VALUES (?, ?)', ['admin', adminHash]);
-      db.run('INSERT INTO users (username, password) VALUES (?, ?)', ['user', userHash], (err) => {
+      db.run('INSERT INTO users (username, password) VALUES (?, ?)', ['usuario', userHash], (err) => {
         if (!err) {
           seedPictures();
         }
@@ -78,11 +78,11 @@ function seedPictures() {
       console.log('Semeando tabela pictures...');
       const picturesSeed = [
         { title: "Ponte de Madeira", url: "https://picsum.photos/id/10", width: 2500, height: 1667, username: "admin" },
-        { title: "Frutas Tropicais", url: "https://picsum.photos/id/102", width: 4320, height: 3240, username: "user" },
+        { title: "Frutas Tropicais", url: "https://picsum.photos/id/102", width: 4320, height: 3240, username: "usuario" },
         { title: "Café da Manhã", url: "https://picsum.photos/id/1060", width: 5598, height: 3732, username: "admin" },
-        { title: "Paisagem de Outono", url: "https://picsum.photos/id/1043", width: 5184, height: 3456, username: "user" },
+        { title: "Paisagem de Outono", url: "https://picsum.photos/id/1043", width: 5184, height: 3456, username: "usuario" },
         { title: "Cachorrinho Fofo", url: "https://picsum.photos/id/237", width: 3500, height: 2095, username: "admin" },
-        { title: "Laptop de Trabalho", url: "https://picsum.photos/id/3", width: 5000, height: 3333, username: "user" }
+        { title: "Laptop de Trabalho", url: "https://picsum.photos/id/3", width: 5000, height: 3333, username: "usuario" }
       ];
 
       picturesSeed.forEach(pic => {

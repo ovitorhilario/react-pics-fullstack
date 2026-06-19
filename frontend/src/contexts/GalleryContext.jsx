@@ -90,6 +90,8 @@ function galleryReducer(state, action) {
         user: null,
         token: null,
         csrfToken: null,
+        images: [],
+        total: 0,
       }
     default:
       return state
@@ -111,7 +113,16 @@ export function GalleryProvider({ children }) {
 
     try {
       const url = `${API_URL}/api/pictures?search=${encodeURIComponent(search || '')}&page=${page}&limit=${limit}&width=${width}&height=${height}&blur=${blur}&grayscale=${grayscale}`
-      const response = await fetch(url, { signal: controller.signal })
+      
+      const headers = {}
+      if (state.token) {
+        headers['Authorization'] = `Bearer ${state.token}`
+      }
+
+      const response = await fetch(url, {
+        headers,
+        signal: controller.signal
+      })
 
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}))
@@ -133,7 +144,7 @@ export function GalleryProvider({ children }) {
       clearTimeout(timeoutId)
       dispatch({ type: SET_LOADING, payload: false })
     }
-  }, [])
+  }, [state.token])
 
   const applyFilters = useCallback(
     async (newFilters) => {
@@ -253,8 +264,10 @@ export function GalleryProvider({ children }) {
   }, [])
 
   useEffect(() => {
-    fetchImages(initialState.filters)
-  }, [fetchImages])
+    if (state.user) {
+      fetchImages(initialState.filters)
+    }
+  }, [fetchImages, state.user])
 
   const value = useMemo(
     () => ({

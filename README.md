@@ -138,4 +138,4 @@ Abra [http://localhost:5173](http://localhost:5173) no seu navegador para utiliz
 | Nome de Usuário | Senha | Nível |
 | :--- | :--- | :--- |
 | `admin` | `admin123` | Administrador |
-| `user` | `user123` | Usuário Padrão |
+| `usuario` | `user123` | Usuário Padrão |

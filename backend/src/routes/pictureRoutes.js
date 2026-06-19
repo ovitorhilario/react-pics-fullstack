@@ -51,8 +51,9 @@ const validateCsrf = (req, res, next) => {
  * GET /api/pictures
  * Retorna as imagens cadastradas, suporta paginação e busca,
  * e cacheia os resultados em memória usando a classe SimpleCache.
+ * Exige autenticação de sessão ativa.
  */
-router.get('/', async (req, res) => {
+router.get('/', requireAuth, async (req, res) => {
   const search = req.query.search || '';
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 12;

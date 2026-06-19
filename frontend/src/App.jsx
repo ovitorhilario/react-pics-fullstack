@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AppBar, Box, Button, Container, Paper, Tab, Tabs, Toolbar, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import LoginIcon from '@mui/icons-material/Login'
@@ -15,6 +15,13 @@ function MainAppContent() {
   const [loginOpen, setLoginOpen] = useState(false)
   const [addOpen, setAddOpen] = useState(false)
   const [tabValue, setTabValue] = useState(0)
+
+  // Reset tab selection to 0 if the user logs out
+  useEffect(() => {
+    if (!user) {
+      setTabValue(0)
+    }
+  }, [user])
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
@@ -72,7 +79,7 @@ function MainAppContent() {
             indicatorColor="primary"
           >
             <Tab label="Galeria Pública (Picsum)" sx={{ fontWeight: 600, fontSize: '1rem' }} />
-            <Tab label="Galeria de Posts (Usuários)" sx={{ fontWeight: 600, fontSize: '1rem' }} />
+            {user && <Tab label="Galeria de Posts (Usuários)" sx={{ fontWeight: 600, fontSize: '1rem' }} />}
           </Tabs>
         </Box>
 
@@ -82,7 +89,7 @@ function MainAppContent() {
           </Paper>
         )}
 
-        {tabValue === 1 && (
+        {tabValue === 1 && user && (
           <Box>
             <SearchForm />
             <Paper sx={{ p: 3, mt: 2 }}>
