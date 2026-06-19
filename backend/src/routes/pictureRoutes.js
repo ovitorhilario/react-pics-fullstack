@@ -79,11 +79,13 @@ router.get('/', async (req, res) => {
 
     const formattedImages = rows.map(img => {
       let displayUrl = img.url;
+      let originalUrl = img.url;
 
-      // Se for uma imagem vinda do picsum, geramos a URL dinâmica com os filtros
+      // Se for uma imagem vinda do picsum, geramos a URL dinâmica com os filtros e remontamos a URL original
       const picsumMatch = img.url.match(/picsum\.photos\/id\/(\d+)/);
       if (picsumMatch) {
         const picsumId = picsumMatch[1];
+        originalUrl = `https://picsum.photos/id/${picsumId}/${img.width}/${img.height}`;
         displayUrl = `https://picsum.photos/id/${picsumId}/${width}/${height}`;
         
         const params = [];
@@ -99,7 +101,7 @@ router.get('/', async (req, res) => {
         id: img.id,
         author: img.author,
         title: img.title,
-        url: img.url,
+        url: originalUrl,
         width: img.width,
         height: img.height,
         displayUrl,
@@ -150,9 +152,15 @@ router.post('/', requireAuth, validateCsrf, async (req, res) => {
   }
 
   try {
+    let normalizedUrl = cleanUrl;
+    const picsumMatch = cleanUrl.match(/picsum\.photos\/id\/(\d+)/);
+    if (picsumMatch) {
+      normalizedUrl = `https://picsum.photos/id/${picsumMatch[1]}`;
+    }
+
     const newPic = await pictureModel.create({
       title: cleanTitle,
-      url: cleanUrl,
+      url: normalizedUrl,
       width: cleanWidth,
       height: cleanHeight,
       user_id: req.user.userId
@@ -161,10 +169,11 @@ router.post('/', requireAuth, validateCsrf, async (req, res) => {
     // Invalida os caches de busca pois um novo registro foi criado
     cache.clearByPrefix('pictures:');
 
-    logger.info(`Nova postagem inserida por '${req.user.username}': '${cleanTitle}' (URL: ${cleanUrl})`);
+    logger.info(`Nova postagem inserida por '${req.user.username}': '${cleanTitle}' (URL: ${normalizedUrl})`);
 
     res.status(201).json({
       ...newPic,
+      url: picsumMatch ? `https://picsum.photos/id/${picsumMatch[1]}/${cleanWidth}/${cleanHeight}` : newPic.url,
       author: req.user.username
     });
   } catch (error) {

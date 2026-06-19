@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import {
   Box,
@@ -10,7 +11,34 @@ import {
 import { useGallery } from '../contexts/GalleryContext.jsx'
 
 function ImageModal() {
-  const { selectedImage, clearSelection } = useGallery()
+  const { selectedImage, clearSelection, filters } = useGallery()
+
+  const imageUrl = useMemo(() => {
+    if (!selectedImage) return ''
+
+    const picsumMatch = selectedImage.url.match(/picsum\.photos\/id\/(\d+)/)
+    if (picsumMatch) {
+      const picsumId = picsumMatch[1]
+      const modalWidth = 1024
+      const aspectRatio = selectedImage.width && selectedImage.height 
+        ? selectedImage.width / selectedImage.height 
+        : 1.5
+      const modalHeight = Math.round(modalWidth / aspectRatio)
+
+      let url = `https://picsum.photos/id/${picsumId}/${modalWidth}/${modalHeight}`
+      
+      const params = []
+      if (filters.grayscale) params.push('grayscale')
+      if (filters.blur > 0) params.push(`blur=${filters.blur}`)
+      
+      if (params.length > 0) {
+        url += `?${params.join('&')}`
+      }
+      return url
+    }
+
+    return selectedImage.url
+  }, [selectedImage, filters.grayscale, filters.blur])
 
   return (
     <Dialog open={selectedImage !== null} onClose={clearSelection} fullWidth maxWidth="md">
@@ -26,7 +54,7 @@ function ImageModal() {
 
           <Box
             component="img"
-            src={selectedImage.download_url}
+            src={imageUrl}
             alt={`Imagem de ${selectedImage.author}`}
             sx={{ width: '100%', borderRadius: 1.5, mb: 2, maxHeight: 520, objectFit: 'cover' }}
           />
@@ -41,7 +69,7 @@ function ImageModal() {
             Dimensões originais: {selectedImage.width} x {selectedImage.height}
           </Typography>
 
-          <Link href={selectedImage.download_url} target="_blank" rel="noopener noreferrer">
+          <Link href={selectedImage.url} target="_blank" rel="noopener noreferrer">
             Abrir link de download
           </Link>
         </DialogContent>
@@ -51,3 +79,4 @@ function ImageModal() {
 }
 
 export default ImageModal
+
