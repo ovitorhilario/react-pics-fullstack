@@ -1,9 +1,24 @@
 # React Pics
 
-Este projeto é uma galeria de imagens interativa e segura de ponta a ponta (Fullstack), construída utilizando **React** no front-end, **Express** no back-end e **SQLite** como banco de dados. 
+Este projeto é uma galeria de imagens interativa e segura de ponta a ponta (Fullstack), construída utilizando **React** no front-end, **Express** no back-end e **SQLite** como banco de dados.
+
+Tecnologias utilizadas:
+- React 19: https://react.dev/
+- Vite: https://vite.dev/
+- Express: https://expressjs.com/
+- Material UI: https://mui.com/material-ui/
+- **Picsum Photos API**: https://picsum.photos/
 
 A aplicação foi projetada e estruturada para demonstrar a mitigação prática de vulnerabilidades críticas listadas no **OWASP Top 10**.
 
+### Bibliotecas de segurança
+- cors: https://www.npmjs.com/package/cors
+- csrf: https://www.npmjs.com/package/csrf
+- perfect-express-sanitizer: https://www.npmjs.com/package/perfect-express-sanitizer
+- xss: https://www.npmjs.com/package/xss
+- express-rate-limit: https://www.npmjs.com/package/express-rate-limit
+- express-winston: https://www.npmjs.com/package/express-winston
+- morgan: https://www.npmjs.com/package/morgan
 
 ## Screenshots
 | Login | Galeria Pública |
