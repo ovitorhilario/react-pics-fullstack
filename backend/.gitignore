@@ -1,0 +1,9 @@
+node_modules/
+.env
+!.env.example
+.DS_Store
+logs/
+*.log
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
