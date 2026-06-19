@@ -176,8 +176,8 @@ function SearchForm() {
           Buscar Posts dos Usuários
         </Typography>
 
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} md={6}>
+        <Grid container spacing={2} sx={{ alignItems: 'center' }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
               label="Pesquisar por título ou autor"
@@ -186,7 +186,7 @@ function SearchForm() {
               placeholder="Ex: admin, Café da Manhã..."
             />
           </Grid>
-          <Grid item xs={12} md={6} sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+          <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
             <Button
               type="submit"
               variant="contained"
@@ -232,7 +232,7 @@ function SearchForm() {
               Filtros de Renderização Avançados
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <TextField
                   fullWidth
                   required
@@ -243,11 +243,11 @@ function SearchForm() {
                   onBlur={() => handleTouchedChange('width')}
                   error={Boolean((touched.width || submitted) && fieldErrors.width)}
                   helperText={(touched.width || submitted) && fieldErrors.width ? fieldErrors.width : ' '}
-                  inputProps={{ min: 10, max: 5000 }}
+                  slotProps={{ htmlInput: { min: 10, max: 5000 } }}
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <TextField
                   fullWidth
                   required
@@ -258,11 +258,11 @@ function SearchForm() {
                   onBlur={() => handleTouchedChange('height')}
                   error={Boolean((touched.height || submitted) && fieldErrors.height)}
                   helperText={(touched.height || submitted) && fieldErrors.height ? fieldErrors.height : ' '}
-                  inputProps={{ min: 10, max: 5000 }}
+                  slotProps={{ htmlInput: { min: 10, max: 5000 } }}
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <TextField
                   fullWidth
                   required
@@ -273,11 +273,11 @@ function SearchForm() {
                   onBlur={() => handleTouchedChange('limit')}
                   error={Boolean((touched.limit || submitted) && fieldErrors.limit)}
                   helperText={(touched.limit || submitted) && fieldErrors.limit ? fieldErrors.limit : ' '}
-                  inputProps={{ min: 1, max: 100 }}
+                  slotProps={{ htmlInput: { min: 1, max: 100 } }}
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Box sx={{ px: 1 }}>
                   <Typography sx={{ mb: 1 }}>Desfoque: {formValues.blur}</Typography>
                   <Slider
@@ -291,7 +291,7 @@ function SearchForm() {
                 </Box>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <FormControlLabel
                   control={<Switch checked={formValues.grayscale} onChange={handleGrayscaleChange} />}
                   label="Escala de cinza"

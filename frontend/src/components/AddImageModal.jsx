@@ -113,7 +113,7 @@ function AddImageModal({ open, onClose }) {
               value={width}
               onChange={(e) => setWidth(e.target.value)}
               disabled={loading}
-              inputProps={{ min: 10, max: 5000 }}
+              slotProps={{ htmlInput: { min: 10, max: 5000 } }}
             />
             <TextField
               margin="dense"
@@ -124,7 +124,7 @@ function AddImageModal({ open, onClose }) {
               value={height}
               onChange={(e) => setHeight(e.target.value)}
               disabled={loading}
-              inputProps={{ min: 10, max: 5000 }}
+              slotProps={{ htmlInput: { min: 10, max: 5000 } }}
             />
           </Box>
         </DialogContent>

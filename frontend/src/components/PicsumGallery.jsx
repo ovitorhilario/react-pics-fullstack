@@ -19,6 +19,7 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import SaveIcon from '@mui/icons-material/Save'
 import { useGallery } from '../contexts/GalleryContext.jsx'
+import SaveImageModal from './SaveImageModal.jsx'
 
 const skeletonItems = Array.from({ length: 12 }, (_, index) => index)
 
@@ -31,6 +32,8 @@ function PicsumGallery() {
   const [error, setError] = useState(null)
   
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' })
+  const [saveModalOpen, setSaveModalOpen] = useState(false)
+  const [imageToSave, setImageToSave] = useState(null)
 
   useEffect(() => {
     let active = true
@@ -80,9 +83,14 @@ function PicsumGallery() {
     }
   }
 
-  const handleSaveImage = async (img) => {
+  const handleSaveImageClick = (img) => {
+    setImageToSave(img)
+    setSaveModalOpen(true)
+  }
+
+  const handleSaveImage = async (img, chosenTitle) => {
     const payload = {
-      title: `Foto por ${img.author}`,
+      title: chosenTitle,
       url: img.download_url,
       width: img.width,
       height: img.height,
@@ -95,12 +103,14 @@ function PicsumGallery() {
         message: 'Imagem salva na sua galeria!',
         severity: 'success',
       })
+      return { success: true }
     } else {
       setSnackbar({
         open: true,
         message: `Erro ao salvar imagem: ${result.error}`,
         severity: 'error',
       })
+      return { success: false, error: result.error }
     }
   }
 
@@ -110,19 +120,21 @@ function PicsumGallery() {
 
   if (loading) {
     return (
-      <Grid container spacing={2}>
-        {skeletonItems.map((item) => (
-          <Grid key={item} item xs={12} sm={6} md={4} lg={3}>
-            <Box sx={{ borderRadius: 1.5, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
-              <Skeleton variant="rectangular" sx={{ width: '100%', aspectRatio: '1/1' }} />
-              <Box sx={{ p: 1.5 }}>
-                <Skeleton width="65%" height={24} sx={{ mb: 1 }} />
-                <Skeleton width="45%" height={16} />
+      <Box sx={{ width: '100%' }}>
+        <Grid container spacing={2}>
+          {skeletonItems.map((item) => (
+            <Grid key={item} size={{ xs: 12, sm: 6, md: 4, lg: 3 }} sx={{ minWidth: '300px', }}>
+              <Box sx={{ borderRadius: 1.5, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
+                <Skeleton variant="rectangular" sx={{ width: '100%', aspectRatio: '1/1' }} />
+                <Box sx={{ p: 1.5 }}>
+                  <Skeleton width="65%" height={32} sx={{ mb: 1 }} />
+                  <Skeleton width="45%" height={24} />
+                </Box>
               </Box>
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     )
   }
 
@@ -136,7 +148,7 @@ function PicsumGallery() {
         {images.map((img) => {
           const previewUrl = `https://picsum.photos/id/${img.id}/300/300`
           return (
-            <Grid key={img.id} item xs={12} sm={6} md={4} lg={3}>
+            <Grid key={img.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
               <Card
                 sx={{
                   height: '100%',
@@ -178,7 +190,7 @@ function PicsumGallery() {
                     <Tooltip title="Salvar na minha galeria">
                       <IconButton
                         color="primary"
-                        onClick={() => handleSaveImage(img)}
+                        onClick={() => handleSaveImageClick(img)}
                         sx={{
                           border: '1px solid',
                           borderColor: 'primary.main',
@@ -206,6 +218,16 @@ function PicsumGallery() {
           />
         </Box>
       )}
+
+      <SaveImageModal
+        open={saveModalOpen}
+        onClose={() => {
+          setSaveModalOpen(false)
+          setImageToSave(null)
+        }}
+        image={imageToSave}
+        onSave={handleSaveImage}
+      />
 
       <Snackbar
         open={snackbar.open}
