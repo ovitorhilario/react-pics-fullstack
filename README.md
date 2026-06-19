@@ -27,7 +27,7 @@ A aplicação foi projetada e estruturada para demonstrar a mitigação prática
 
 | Inserir Imagem do usuário | Galeria dos Usuários + Busca por título e autor |
 |---|---|
-| ![home](docs/inserir_image.png) | ![gallery](docs/galeria_privada.png) |
+| ![home](docs/inserir_image.png) | ![gallery](docs/galeria_dos_usuarios.png) |
 
 ---
 
