@@ -25,7 +25,7 @@ A aplicação foi projetada e estruturada para demonstrar a mitigação prática
 |---|---|
 | ![home](docs/login.png) | ![gallery](docs/galeria_publica.png) |
 
-| Inserir Imagem do usuário | Galeria Privada + Busca por título e autor |
+| Inserir Imagem do usuário | Galeria dos Usuários + Busca por título e autor |
 |---|---|
 | ![home](docs/inserir_image.png) | ![gallery](docs/galeria_privada.png) |
 
