@@ -29,11 +29,33 @@ app.use(cors({
 }));
 
 // 5. Sanitização Global contra Injeção SQL/NoSQL e XSS básico no payload
-app.use(sanitizer.clean({
-  xss: true,
-  noSql: true,
-  sql: true
-}));
+const ignoreUrlsInSanitizer = (req, res, next) => {
+  const backup = {};
+  const urlRegex = /^(https?:\/\/|www\.)/i;
+
+  // Check and strip URLs from req.body
+  if (req.body) {
+    for (const [key, value] of Object.entries(req.body)) {
+      if (typeof value === 'string' && urlRegex.test(value)) {
+        backup[key] = value; 
+        delete req.body[key]; 
+      }
+    }
+  }
+
+  // Run the standard sanitizer on the stripped body
+  sanitizer.clean({ xss: true, noSql: true, sql: true })(req, res, () => {
+    // Reattach the untouched URL values back to the body
+    if (req.body) {
+      Object.assign(req.body, backup);
+    }
+    next();
+  });
+};
+
+app.use(ignoreUrlsInSanitizer);
+
+
 
 // Servir arquivos estáticos (se necessário)
 app.use('/public', express.static(path.join(__dirname, 'public')));

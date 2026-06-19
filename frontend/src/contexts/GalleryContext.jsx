@@ -15,6 +15,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
 const initialState = {
   images: [],
+  total: 0,
   loading: false,
   error: null,
   filters: { width: 300, height: 300, page: 1, limit: 12, blur: 0, grayscale: false, search: '' },
@@ -34,7 +35,8 @@ function galleryReducer(state, action) {
     case SET_IMAGES:
       return {
         ...state,
-        images: action.payload,
+        images: action.payload.images || [],
+        total: action.payload.total || 0,
       }
     case SET_ERROR:
       return {
@@ -117,7 +119,7 @@ export function GalleryProvider({ children }) {
       }
 
       const data = await response.json()
-      dispatch({ type: SET_IMAGES, payload: data.images })
+      dispatch({ type: SET_IMAGES, payload: { images: data.images, total: data.total } })
       dispatch({ type: SET_ERROR, payload: null })
     } catch (error) {
       const message =
@@ -125,7 +127,7 @@ export function GalleryProvider({ children }) {
           ? 'A requisição demorou demais. Tente novamente em instantes.'
           : error.message || 'Ocorreu um erro ao buscar imagens. Verifique sua conexão e tente novamente.'
 
-      dispatch({ type: SET_IMAGES, payload: [] })
+      dispatch({ type: SET_IMAGES, payload: { images: [], total: 0 } })
       dispatch({ type: SET_ERROR, payload: message })
     } finally {
       clearTimeout(timeoutId)

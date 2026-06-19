@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { AppBar, Box, Button, Container, Grid, Paper, Toolbar, Typography } from '@mui/material'
+import { AppBar, Box, Button, Container, Paper, Tab, Tabs, Toolbar, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import LoginIcon from '@mui/icons-material/Login'
 import LogoutIcon from '@mui/icons-material/Logout'
 import SearchForm from './components/SearchForm.jsx'
 import ImageGallery from './components/ImageGallery.jsx'
+import PicsumGallery from './components/PicsumGallery.jsx'
 import LoginModal from './components/LoginModal.jsx'
 import AddImageModal from './components/AddImageModal.jsx'
 import { GalleryProvider, useGallery } from './contexts/GalleryContext.jsx'
@@ -13,6 +14,7 @@ function MainAppContent() {
   const { user, logout } = useGallery()
   const [loginOpen, setLoginOpen] = useState(false)
   const [addOpen, setAddOpen] = useState(false)
+  const [tabValue, setTabValue] = useState(0)
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
@@ -61,16 +63,33 @@ function MainAppContent() {
       </AppBar>
 
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12, lg: 4 }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+          <Tabs
+            value={tabValue}
+            onChange={(_, val) => setTabValue(val)}
+            aria-label="abas da galeria"
+            textColor="primary"
+            indicatorColor="primary"
+          >
+            <Tab label="Galeria Pública (Picsum)" sx={{ fontWeight: 600, fontSize: '1rem' }} />
+            <Tab label="Galeria de Posts (Usuários)" sx={{ fontWeight: 600, fontSize: '1rem' }} />
+          </Tabs>
+        </Box>
+
+        {tabValue === 0 && (
+          <Paper sx={{ p: 3 }}>
+            <PicsumGallery />
+          </Paper>
+        )}
+
+        {tabValue === 1 && (
+          <Box>
             <SearchForm />
-          </Grid>
-          <Grid size={{ xs: 12, lg: 8 }}>
-            <Paper sx={{ p: 2 }}>
+            <Paper sx={{ p: 3, mt: 2 }}>
               <ImageGallery />
             </Paper>
-          </Grid>
-        </Grid>
+          </Box>
+        )}
       </Container>
 
       {/* Modais de interação */}

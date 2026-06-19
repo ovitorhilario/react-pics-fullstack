@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
+import FilterListIcon from '@mui/icons-material/FilterList'
 import {
   Alert,
   Box,
   Button,
   CircularProgress,
+  Collapse,
   FormControlLabel,
   Grid,
   Paper,
@@ -28,7 +30,6 @@ function toNumber(value) {
   if (value === '') {
     return NaN
   }
-
   return Number(value)
 }
 
@@ -39,7 +40,6 @@ function getFieldError(field, value) {
     }
 
     const numericValue = toNumber(value)
-
     if (Number.isNaN(numericValue)) {
       return 'Informe um número válido.'
     }
@@ -55,7 +55,6 @@ function getFieldError(field, value) {
     }
 
     const numericValue = toNumber(value)
-
     if (Number.isNaN(numericValue)) {
       return 'Informe um número válido.'
     }
@@ -97,6 +96,7 @@ function SearchForm() {
     limit: false,
   })
   const [submitted, setSubmitted] = useState(false)
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
   const handleTouchedChange = (field) => {
     setTouched((prev) => ({
@@ -107,7 +107,6 @@ function SearchForm() {
 
   const handleNumberChange = (field) => (event) => {
     const value = event.target.value
-
     setFormValues((prev) => ({
       ...prev,
       [field]: value,
@@ -171,115 +170,136 @@ function SearchForm() {
   }
 
   return (
-    <Paper sx={{ p: '2rem' }}>
+    <Paper sx={{ p: 3, mb: 3 }}>
       <Box component="form" onSubmit={handleSubmit}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Filtros de busca
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
+          Buscar Posts dos Usuários
         </Typography>
 
-        <TextField
-          fullWidth
-          label="Pesquisar por título ou autor"
-          value={formValues.search}
-          onChange={(e) => setFormValues(prev => ({ ...prev, search: e.target.value }))}
-          sx={{ mb: 3 }}
-        />
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Pesquisar por título ou autor"
+              value={formValues.search}
+              onChange={(e) => setFormValues((prev) => ({ ...prev, search: e.target.value }))}
+              placeholder="Ex: admin, Café da Manhã..."
+            />
+          </Grid>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              startIcon={loading ? <CircularProgress color="inherit" size={18} /> : <SearchIcon />}
+              disabled={loading}
+              sx={{ height: 56, flexGrow: 1 }}
+            >
+              Buscar
+            </Button>
+
+            <Button
+              type="button"
+              variant="outlined"
+              color="secondary"
+              onClick={handleClear}
+              disabled={loading}
+              sx={{ height: 56 }}
+            >
+              Limpar
+            </Button>
+
+            <Button
+              variant="outlined"
+              onClick={() => setShowAdvanced((prev) => !prev)}
+              startIcon={<FilterListIcon />}
+              sx={{ height: 56, flexGrow: 1 }}
+            >
+              {showAdvanced ? 'Ocultar Filtros' : 'Filtros Avançados'}
+            </Button>
+          </Grid>
+        </Grid>
 
         {error ? (
-          <Alert severity="error" sx={{ mb: 2 }}>
+          <Alert severity="error" sx={{ mb: 2, mt: 2 }}>
             {error}
           </Alert>
         ) : null}
 
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              fullWidth
-              required
-              type="number"
-              label="Largura"
-              value={formValues.width}
-              onChange={handleNumberChange('width')}
-              onBlur={() => handleTouchedChange('width')}
-              error={Boolean((touched.width || submitted) && fieldErrors.width)}
-              helperText={(touched.width || submitted) && fieldErrors.width ? fieldErrors.width : ' '}
-              inputProps={{ min: 10, max: 5000 }}
-            />
-          </Grid>
+        <Collapse in={showAdvanced}>
+          <Box sx={{ borderTop: '1px solid', borderColor: 'divider', pt: 3, mt: 3 }}>
+            <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
+              Filtros de Renderização Avançados
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6} md={3}>
+                <TextField
+                  fullWidth
+                  required
+                  type="number"
+                  label="Largura"
+                  value={formValues.width}
+                  onChange={handleNumberChange('width')}
+                  onBlur={() => handleTouchedChange('width')}
+                  error={Boolean((touched.width || submitted) && fieldErrors.width)}
+                  helperText={(touched.width || submitted) && fieldErrors.width ? fieldErrors.width : ' '}
+                  inputProps={{ min: 10, max: 5000 }}
+                />
+              </Grid>
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              fullWidth
-              required
-              type="number"
-              label="Altura"
-              value={formValues.height}
-              onChange={handleNumberChange('height')}
-              onBlur={() => handleTouchedChange('height')}
-              error={Boolean((touched.height || submitted) && fieldErrors.height)}
-              helperText={(touched.height || submitted) && fieldErrors.height ? fieldErrors.height : ' '}
-              inputProps={{ min: 10, max: 5000 }}
-            />
-          </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <TextField
+                  fullWidth
+                  required
+                  type="number"
+                  label="Altura"
+                  value={formValues.height}
+                  onChange={handleNumberChange('height')}
+                  onBlur={() => handleTouchedChange('height')}
+                  error={Boolean((touched.height || submitted) && fieldErrors.height)}
+                  helperText={(touched.height || submitted) && fieldErrors.height ? fieldErrors.height : ' '}
+                  inputProps={{ min: 10, max: 5000 }}
+                />
+              </Grid>
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              fullWidth
-              required
-              type="number"
-              label="Quantidade por página"
-              value={formValues.limit}
-              onChange={handleNumberChange('limit')}
-              onBlur={() => handleTouchedChange('limit')}
-              error={Boolean((touched.limit || submitted) && fieldErrors.limit)}
-              helperText={(touched.limit || submitted) && fieldErrors.limit ? fieldErrors.limit : ' '}
-              inputProps={{ min: 1, max: 100 }}
-            />
-          </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <TextField
+                  fullWidth
+                  required
+                  type="number"
+                  label="Quantidade por página"
+                  value={formValues.limit}
+                  onChange={handleNumberChange('limit')}
+                  onBlur={() => handleTouchedChange('limit')}
+                  error={Boolean((touched.limit || submitted) && fieldErrors.limit)}
+                  helperText={(touched.limit || submitted) && fieldErrors.limit ? fieldErrors.limit : ' '}
+                  inputProps={{ min: 1, max: 100 }}
+                />
+              </Grid>
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Box sx={{ px: 1, pt: 1 }}>
-              <Typography sx={{ mb: 1 }}>Desfoque: {formValues.blur}</Typography>
-              <Slider
-                min={0}
-                max={10}
-                step={1}
-                value={formValues.blur}
-                onChange={handleBlurChange}
-                valueLabelDisplay="auto"
-              />
-            </Box>
-          </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <Box sx={{ px: 1 }}>
+                  <Typography sx={{ mb: 1 }}>Desfoque: {formValues.blur}</Typography>
+                  <Slider
+                    min={0}
+                    max={10}
+                    step={1}
+                    value={formValues.blur}
+                    onChange={handleBlurChange}
+                    valueLabelDisplay="auto"
+                  />
+                </Box>
+              </Grid>
 
-          <Grid size={{ xs: 12 }}>
-            <FormControlLabel
-              control={<Switch checked={formValues.grayscale} onChange={handleGrayscaleChange} />}
-              label="Escala de cinza"
-            />
-          </Grid>
-        </Grid>
-
-        <Box sx={{ display: 'flex', gap: 1.5, mt: 2, flexWrap: 'wrap' }}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            startIcon={loading ? <CircularProgress color="inherit" size={18} /> : <SearchIcon />}
-            disabled={loading}
-          >
-            Buscar imagens
-          </Button>
-
-          <Button
-            type="button"
-            variant="outlined"
-            color="secondary"
-            onClick={handleClear}
-            disabled={loading}
-          >
-            Limpar
-          </Button>
-        </Box>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={<Switch checked={formValues.grayscale} onChange={handleGrayscaleChange} />}
+                  label="Escala de cinza"
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        </Collapse>
       </Box>
     </Paper>
   )
